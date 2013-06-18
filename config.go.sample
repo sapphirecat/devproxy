@@ -1,0 +1,24 @@
+package main
+
+import "regexp"
+
+// Interface to bind to; by default, this is localhost, to prevent open
+// access.  May be blank to listen on all interfaces.
+const LISTEN_INTERFACE = "127.0.0.1"
+
+// Interception configuration
+func init () {
+	// Host which will receive the redirected requests (used during the
+	// construction of the RuleAction below)
+	host := "127.0.0.1"
+	RuleAdd(&RuleAction{
+		// Matcher: may be matched against a hostname only (http + default port)
+		// or may include a ":port" section (http + other port, https + any port)
+		regexp.MustCompile( "^(?:.+\\.)?example\\.(com|net|org)(?::\\d+)?$"),
+		// HttpUpstream: HTTP target "host:port" (or ""), default is port 80
+		host,
+		// TlsUpstream: HTTPS target "host:port" (or ""), port is REQUIRED!
+		host + ":443"})
+}
+
+// vim:ft=go
