@@ -2,23 +2,28 @@ package main
 
 import "regexp"
 
-// Interface to bind to; by default, this is localhost, to prevent open
-// access.  May be blank to listen on all interfaces.
-const LISTEN_INTERFACE = "127.0.0.1"
-
 // Interception configuration
-func init () {
-	// Host which will receive the redirected requests (used during the
-	// construction of the RuleAction below)
-	host := "127.0.0.1"
-	RuleAdd(&RuleAction{
+func ConfigureRules(r RouteArgs) Ruleset {
+	// Full ruleset constructed here; capacity=1 because there will be 1 rule.
+	rules := NewRuleset(1)
+	rules.Add(Rule{
 		// Matcher: may be matched against a hostname only (http + default port)
 		// or may include a ":port" section (http + other port, https + any port)
-		regexp.MustCompile( "^(?:.+\\.)?example\\.(com|net|org)(?::\\d+)?$"),
-		// HttpUpstream: HTTP target "host:port" (or ""), default is port 80
-		host,
-		// TlsUpstream: HTTPS target "host:port" (or ""), port is REQUIRED!
-		host + ":443"})
+		regexp.MustCompile("^(?:.+\\.)?example\\.(com|net|org)(?::\\d+)?$"),
+
+		// Action: a func(host,mode)string that returns either "" (meaning
+		// declined, try the next matcher) or a "hostname[:port]" to connect.
+		// :port MUST be added for TLS!
+		//
+		// We also offer a set of functions that build Actions: SendHttpTo,
+		// SendTlsTo, and SendAllTo all take a host, and send traffic to ports 80
+		// and/or 443 as appropriate.  Each of those has a Send*ToPort variant
+		// that takes a host and port, and sends traffic to the specified port.
+		//
+		// Yes, SendAllToPort sends both HTTP and TLS traffic to the _same_ port.
+		SendAllTo(r.Target)});
+
+	return rules
 }
 
 // vim:ft=go

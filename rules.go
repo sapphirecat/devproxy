@@ -4,6 +4,7 @@ package main
 // rights reserved.  See the accompanying LICENSE file for license terms.
 
 import (
+	"fmt"
 	"log"
 	"net/http"
 	"regexp"
@@ -16,46 +17,88 @@ const (
 	RuleForTls
 )
 
-type RuleAction struct {
-	Matcher      *regexp.Regexp
-	HttpUpstream string // HTTP target "host:port"
-	TlsUpstream  string // HTTPS target "host:port"
+type Rule struct {
+	Matcher *regexp.Regexp
+	Actor   Action  // function called when match hits -> string [hostname[:port]]
 }
 
-var rules = []*RuleAction{}
-
-func RuleAdd(act *RuleAction) {
-	rules = append(rules, act)
+type Mode int;
+type Action func(string, Mode) string;
+type Ruleset struct {
+	items []Rule
 }
 
-func RuleRemove(act *RuleAction) int {
-	// someday stdlib should have a filter function for slices....
-	var cur, end, hits int
+func (r *Ruleset) Add (a Rule) {
+	r.items = append(r.items, a)
+}
 
-	for end = len(rules); cur < end; cur++ {
-		// this could do multiple copies if you added the same rule many times.
-		// so don't do that.
-		for rules[cur] == act && cur < end {
-			hits++
-			end--
-			rules[cur] = rules[end]
+func (r *Ruleset) Length () int {
+	return len(r.items)
+}
+
+func NewRuleset(capacity int) Ruleset {
+	return Ruleset{
+		make([]Rule, 0, capacity),
+	}
+}
+
+func redirectPort (really bool, host string, port int) string {
+	if really == true {
+		return fmt.Sprintf("%s:%d", host, port)
+	} else {
+		return ""
+	}
+}
+
+func SendHttpTo (host string) Action {
+	return func(matched_host string, mode Mode) string {
+		if mode == RuleForHttp {
+			return host
+		} else {
+			return ""
 		}
 	}
-
-	if hits > 0 {
-		rules = rules[0:end]
-	}
-
-	return hits
 }
 
-func getTarget(hostname string, mode int) string {
-	for _, actor := range rules {
-		if actor.Matcher.MatchString(hostname) == true {
-			if mode == RuleForHttp && actor.HttpUpstream != "" {
-				return actor.HttpUpstream
-			} else if mode == RuleForTls && actor.TlsUpstream != "" {
-				return actor.TlsUpstream
+func SendHttpToPort (host string, port int) Action {
+	return func(matched_host string, mode Mode) string {
+		return redirectPort(mode == RuleForHttp, host, port);
+	}
+}
+
+func SendAllTo (host string) Action {
+	return func(matched_host string, mode Mode) string {
+		if mode == RuleForHttp {
+			return host
+		} else {
+			return redirectPort(true, host, 443)
+		}
+	}
+}
+
+func SendAllToPort (host string, port int) Action {
+	return func(matched_host string, mode Mode) string {
+		return redirectPort(true, host, port)
+	}
+}
+
+func SendTlsTo (host string) Action {
+	return func(matched_host string, mode Mode) string {
+		return redirectPort(mode == RuleForTls, host, 443)
+	}
+}
+
+func SendTlsToPort (host string, port int) Action {
+	return func(matched_host string, mode Mode) string {
+		return redirectPort(mode == RuleForTls, host, port)
+	}
+}
+
+func getTarget(rules Ruleset, hostname string, mode Mode) string {
+	for _, rule := range rules.items {
+		if rule.Matcher.MatchString(hostname) == true {
+			if result := rule.Actor(hostname, mode) ; result != "" {
+				return result
 			}
 		}
 	}
@@ -63,9 +106,9 @@ func getTarget(hostname string, mode int) string {
 	return ""
 }
 
-func NewDefaultHttpsRule(verbose bool) func(string, *goproxy.ProxyCtx) (*goproxy.ConnectAction, string) {
+func NewDefaultHttpsRule(ruleset Ruleset, verbose bool) func(string, *goproxy.ProxyCtx) (*goproxy.ConnectAction, string) {
 	return func(host string, ctx *goproxy.ProxyCtx) (*goproxy.ConnectAction, string) {
-		target := getTarget(host, RuleForTls)
+		target := getTarget(ruleset, host, RuleForTls)
 		if target == "" {
 			target = host
 			if verbose {
@@ -79,10 +122,10 @@ func NewDefaultHttpsRule(verbose bool) func(string, *goproxy.ProxyCtx) (*goproxy
 	}
 }
 
-func NewDefaultHttpRule(verbose bool) func(*http.Request, *goproxy.ProxyCtx) (*http.Request, *http.Response) {
+func NewDefaultHttpRule(ruleset Ruleset, verbose bool) func(*http.Request, *goproxy.ProxyCtx) (*http.Request, *http.Response) {
 	return func(r *http.Request, ctx *goproxy.ProxyCtx) (*http.Request, *http.Response) {
 		host := r.URL.Host
-		target := getTarget(host, RuleForHttp)
+		target := getTarget(ruleset, host, RuleForHttp)
 		if target != "" {
 			r.URL.Host = target
 			if verbose {
@@ -96,7 +139,7 @@ func NewDefaultHttpRule(verbose bool) func(*http.Request, *goproxy.ProxyCtx) (*h
 	}
 }
 
-func SetDefaultRules(proxy *goproxy.ProxyHttpServer, verbose bool) {
-	proxy.OnRequest().HandleConnectFunc(NewDefaultHttpsRule(verbose))
-	proxy.OnRequest().DoFunc(NewDefaultHttpRule(verbose))
+func SetDefaultRules(proxy *goproxy.ProxyHttpServer, rules Ruleset, verbose bool) {
+	proxy.OnRequest().HandleConnectFunc(NewDefaultHttpsRule(rules, verbose))
+	proxy.OnRequest().DoFunc(NewDefaultHttpRule(rules, verbose))
 }
