@@ -19,20 +19,20 @@ const (
 
 type Rule struct {
 	Matcher *regexp.Regexp
-	Actor   Action  // function called when match hits -> string [hostname[:port]]
+	Actor   Action // function called when match hits -> string [hostname[:port]]
 }
 
-type Mode int;
-type Action func(string, Mode) string;
+type Mode int
+type Action func(string, Mode) string
 type Ruleset struct {
 	items []Rule
 }
 
-func (r *Ruleset) Add (a Rule) {
+func (r *Ruleset) Add(a Rule) {
 	r.items = append(r.items, a)
 }
 
-func (r *Ruleset) Length () int {
+func (r *Ruleset) Length() int {
 	return len(r.items)
 }
 
@@ -42,7 +42,7 @@ func NewRuleset(capacity int) Ruleset {
 	}
 }
 
-func redirectPort (really bool, host string, port int) string {
+func redirectPort(really bool, host string, port int) string {
 	if really == true {
 		return fmt.Sprintf("%s:%d", host, port)
 	} else {
@@ -50,7 +50,7 @@ func redirectPort (really bool, host string, port int) string {
 	}
 }
 
-func SendHttpTo (host string) Action {
+func SendHttpTo(host string) Action {
 	return func(matched_host string, mode Mode) string {
 		if mode == RuleForHttp {
 			return host
@@ -60,13 +60,13 @@ func SendHttpTo (host string) Action {
 	}
 }
 
-func SendHttpToPort (host string, port int) Action {
+func SendHttpToPort(host string, port int) Action {
 	return func(matched_host string, mode Mode) string {
-		return redirectPort(mode == RuleForHttp, host, port);
+		return redirectPort(mode == RuleForHttp, host, port)
 	}
 }
 
-func SendAllTo (host string) Action {
+func SendAllTo(host string) Action {
 	return func(matched_host string, mode Mode) string {
 		if mode == RuleForHttp {
 			return host
@@ -76,19 +76,19 @@ func SendAllTo (host string) Action {
 	}
 }
 
-func SendAllToPort (host string, port int) Action {
+func SendAllToPort(host string, port int) Action {
 	return func(matched_host string, mode Mode) string {
 		return redirectPort(true, host, port)
 	}
 }
 
-func SendTlsTo (host string) Action {
+func SendTlsTo(host string) Action {
 	return func(matched_host string, mode Mode) string {
 		return redirectPort(mode == RuleForTls, host, 443)
 	}
 }
 
-func SendTlsToPort (host string, port int) Action {
+func SendTlsToPort(host string, port int) Action {
 	return func(matched_host string, mode Mode) string {
 		return redirectPort(mode == RuleForTls, host, port)
 	}
@@ -97,7 +97,7 @@ func SendTlsToPort (host string, port int) Action {
 func getTarget(rules Ruleset, hostname string, mode Mode) string {
 	for _, rule := range rules.items {
 		if rule.Matcher.MatchString(hostname) == true {
-			if result := rule.Actor(hostname, mode) ; result != "" {
+			if result := rule.Actor(hostname, mode); result != "" {
 				return result
 			}
 		}
