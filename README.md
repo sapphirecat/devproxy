@@ -74,6 +74,13 @@ With `-debug`, devproxy tells goproxy to log what _it_ is doing.
 These options are fully independent; neither implies the other.
 
 
+# Compatibility
+
+Extensively revamped into a library-oriented package in October 2014.  Tested
+with go1.3.3 and goproxy commit 30564e6cf38efb68e3ab8ef640cdd04b34ac1f44.
+Currently expected to remain stable.
+
+
 # Why?
 
 A staging environment should be as close to production as physically possible.
