@@ -1,6 +1,3 @@
 # build artifacts
 devproxy
 *.exe
-
-# secrets
-config.go

@@ -21,7 +21,7 @@ func ConfigureRules(r RouteArgs) Ruleset {
 		// that takes a host and port, and sends traffic to the specified port.
 		//
 		// Yes, SendAllToPort sends both HTTP and TLS traffic to the _same_ port.
-		SendAllTo(r.Target)});
+		SendAllTo(r.Target)})
 
 	return rules
 }
