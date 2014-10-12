@@ -1,12 +1,16 @@
 package main
 
-import "regexp"
+import (
+	"regexp"
+
+	"github.com/sapphirecat/devproxy"
+)
 
 // Interception configuration
-func ConfigureRules(r RouteArgs) Ruleset {
+func ConfigureRules(r RouteArgs) devproxy.Ruleset {
 	// Full ruleset constructed here; capacity=1 because there will be 1 rule.
-	rules := NewRuleset(1)
-	rules.Add(Rule{
+	rules := devproxy.NewRuleset(1)
+	rules.Add(devproxy.Rule{
 		// Matcher: may be matched against a hostname only (http + default port)
 		// or may include a ":port" section (http + other port, https + any port)
 		regexp.MustCompile("^(?:.+\\.)?example\\.(com|net|org)(?::\\d+)?$"),
@@ -21,7 +25,7 @@ func ConfigureRules(r RouteArgs) Ruleset {
 		// that takes a host and port, and sends traffic to the specified port.
 		//
 		// Yes, SendAllToPort sends both HTTP and TLS traffic to the _same_ port.
-		SendAllTo(r.Target)})
+		devproxy.SendAllTo(r.Target)})
 
 	return rules
 }

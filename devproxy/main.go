@@ -8,6 +8,8 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+
+	"github.com/sapphirecat/devproxy"
 )
 
 type RouteArgs struct {
@@ -26,10 +28,10 @@ func getVerbosity(a Args) int {
 	var v int
 
 	if a.verbose_self == true {
-		v |= VerboseRuleMatch
+		v |= devproxy.VerboseRuleMatch
 	}
 	if a.verbose_guts == true {
-		v |= VerboseGoProxy
+		v |= devproxy.VerboseGoProxy
 	}
 
 	return v
@@ -47,9 +49,9 @@ func ParseFlags() Args {
 }
 
 func main() {
-	a := ParseFlags()                   // Args
-	rset := ConfigureRules(a.RouteArgs) // Ruleset
-	proxy := NewServer(rset, getVerbosity(a))
+	a := ParseFlags()                   // main.Args
+	rset := ConfigureRules(a.RouteArgs) // devproxy.Ruleset
+	proxy := devproxy.NewServer(rset, getVerbosity(a))
 
 	listen_addr := fmt.Sprintf("%s:%d", a.Bind, a.Port)
 	log.Println("listening on", listen_addr, "with", rset.Length(), "interception rules active")
