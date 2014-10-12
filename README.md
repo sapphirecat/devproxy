@@ -49,6 +49,31 @@ default ports, so that the application can hard-code production URLs and have
 them actually be self-referential.
 
 
+# Command line flags
+
+## -listen and -port
+
+By default, current devproxy listens on `127.0.0.1:8111` and forwards to the
+standard ports on `127.0.0.1`.  The listen address and port have always been
+changeable with command-line flags `-listen {ip_addr} -port {tcp_port}`.
+
+## -target
+
+Prior to the October 2014 rewrite, the rules in `config.go` directly specified
+the upstream server and port to use.  Since October 2014, the rules may still
+directly specify an upstream, or use the `Target` from the passed-in
+`RouteArgs` struct to use the (single) IP address specified on the command
+line with `-target {ip_addr}`.
+
+## -verbose and -debug
+
+With `-verbose`, devproxy logs requests it receives, and the decisions taken.
+
+With `-debug`, devproxy tells goproxy to log what _it_ is doing.
+
+These options are fully independent; neither implies the other.
+
+
 # Why?
 
 A staging environment should be as close to production as physically possible.
