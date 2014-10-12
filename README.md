@@ -33,12 +33,12 @@ it just shuttles bytes.
 
 # Using it
 
-1. Copy config.go.sample to config.go
-2. Edit as desired
-3. `go install github.com/elazarl/goproxy` if you don’t have it
-4. `go build`
-5. Run devproxy (Linux/OS X) or devproxy.exe (Windows)
-6. Set your web proxy to 127.0.0.1:8111
+1. Edit [devproxy/config.go](./devproxy/config.go) to configure what servers
+   should be intercepted
+2. `go install github.com/elazarl/goproxy` if you don’t have it
+3. `go build ./devproxy`
+4. Run devproxy (Linux/OS X) or devproxy.exe (Windows)
+5. Set your web proxy to 127.0.0.1:8111
 
 I use [FoxyProxy Basic](http://getfoxyproxy.org) with Firefox so that I can
 easily switch between using devproxy or not, and see at a glance whether I
