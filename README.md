@@ -33,7 +33,9 @@ it just shuttles bytes.
 
 # Using it
 
-1. Clone onto your GOPATH.
+1. Clone onto your GOPATH.  You should end up with a
+	 `<GOPATH_dir>/src/github.com/sapphirecat/devproxy` directory, containing
+	 this README.md file.
 2. Edit [cmd/devproxy/config.go](./cmd/devproxy/config.go) to configure what
    servers should be intercepted
 3. `go install github.com/elazarl/goproxy` if you don’t have it
