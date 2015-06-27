@@ -6,7 +6,7 @@ package devproxy
 import (
 	"net/http"
 
-	"github.com/elazarl/goproxy"
+	"github.com/sapphirecat/devproxy/_third_party/github.com/elazarl/goproxy"
 )
 
 // Bitfield of verbosity.
