@@ -38,10 +38,9 @@ it just shuttles bytes.
 	 this README.md file.
 2. Edit [cmd/devproxy/config.go](./cmd/devproxy/config.go) to configure what
    servers should be intercepted
-3. `go install github.com/elazarl/goproxy` if you don’t have it
-4. `go build ./cmd/devproxy`
-5. Run ./devproxy (Linux/OS X) or devproxy.exe (Windows)
-6. Set your web proxy to 127.0.0.1:8111
+3. `go build ./cmd/devproxy`
+4. Run ./devproxy (Linux/OS X) or devproxy.exe (Windows)
+5. Set your web proxy to 127.0.0.1:8111
 
 I use [FoxyProxy Basic](http://getfoxyproxy.org) with Firefox so that I can
 easily switch between using devproxy or not, and see at a glance whether I
@@ -79,8 +78,8 @@ These options are fully independent; neither implies the other.
 
 # Compatibility
 
-Extensively revamped into a library-oriented package in October 2014.  Tested
-with go1.3.3 and goproxy commit 30564e6cf38efb68e3ab8ef640cdd04b34ac1f44.
+Last major rewrite: October 2014.
+Last tested with go1.4.2.
 Currently expected to remain stable.
 
 
