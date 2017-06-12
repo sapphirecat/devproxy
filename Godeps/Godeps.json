@@ -1,0 +1,12 @@
+{
+	"ImportPath": "github.com/sapphirecat/devproxy",
+	"GoVersion": "go1.8",
+	"GodepVersion": "v79",
+	"Deps": [
+		{
+			"ImportPath": "github.com/elazarl/goproxy",
+			"Comment": "v1.0-108-gaacba83",
+			"Rev": "aacba83f36a55ac31cbb71c06547a328c0cd1604"
+		}
+	]
+}

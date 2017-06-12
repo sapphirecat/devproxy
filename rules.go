@@ -9,7 +9,7 @@ import (
 	"net/http"
 	"regexp"
 
-	"github.com/sapphirecat/devproxy/_third_party/github.com/elazarl/goproxy"
+	"github.com/elazarl/goproxy"
 )
 
 const (
