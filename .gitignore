@@ -1,3 +1,6 @@
 # build artifacts
 devproxy
 *.exe
+
+# undo one of my super clever global .gitignore rules
+!*.com
