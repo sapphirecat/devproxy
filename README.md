@@ -79,7 +79,7 @@ These options are fully independent; neither implies the other.
 # Compatibility
 
 Last major rewrite: October 2014.
-Last tested with go1.4.2.
+Last tested with go1.10 on macOS High Sierra.
 Currently expected to remain stable.
 
 
