@@ -27,8 +27,8 @@ func ConfigureRules(r RouteArgs) devproxy.Ruleset {
 		// SendTlsTo, and SendAllTo all take a host, and send traffic to ports 80
 		// and/or 443 as appropriate.  Each of those has a Send*ToPort variant
 		// that takes a host and port, and sends traffic to the specified port.
-		// SendAllToPort sends both HTTP and TLS traffic to the _same_ port; it's
-		// largely defined for completeness.
+		// SendAllToPort sends both HTTP and TLS traffic to the _same_ port; for
+		// different ports, use SendAllToDualPorts(host, httpPort, tlsPort).
 		devproxy.SendAllTo(r.Target)})
 
 	// More rules can be added here, if needed.

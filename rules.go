@@ -82,6 +82,16 @@ func SendAllToPort(host string, port int) Action {
 	}
 }
 
+func SendAllToDualPorts(host string, httpPort int, httpsPort int) Action {
+	return func(matched_host string, mode Mode) string {
+		if mode == RuleForTls {
+			return redirectPort(true, host, httpsPort)
+		} else {
+			return redirectPort(mode == RuleForHttp, host, httpPort);
+		}
+	}
+}
+
 func SendTlsTo(host string) Action {
 	return func(matched_host string, mode Mode) string {
 		return redirectPort(mode == RuleForTls, host, 443)
