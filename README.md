@@ -42,9 +42,9 @@ it just shuttles bytes.
 4. Run ./devproxy (Linux/OS X) or devproxy.exe (Windows)
 5. Set your web proxy to 127.0.0.1:8111
 
-I use [FoxyProxy Basic](http://getfoxyproxy.org) with Firefox so that I can
-easily switch between using devproxy or not, and see at a glance whether I
-_am_ using it.
+I use [Proxy Switcher and Manager](https://addons.mozilla.org/en-US/firefox/addon/proxy-switcher-and-manager/)
+with Firefox so that I can easily switch between using devproxy or not, and
+see at a glance whether I _am_ using it.
 
 I also use a virtual machine as the doppelgänger with the Web server on the
 default ports, so that the application can hard-code production URLs and have
@@ -79,7 +79,7 @@ These options are fully independent; neither implies the other.
 # Compatibility
 
 Last major rewrite: October 2014.
-Last tested with go1.10 on macOS High Sierra.
+Last tested on macOS Catalina with go 1.14, installed via homebrew.
 Currently expected to remain stable.
 
 
@@ -93,7 +93,7 @@ Modifying `/etc/hosts` all the time to point the production DNS at the staging
 server (or comment said redirection back out) is tedious, invisible, and
 requires frequent privilege escalations.
 
-With FoxyProxy, switching the browser between truth and lie is improved in all
+With the proxy switcher, switching the browser between truth and lie is improved in all
 respects: a fast user-level action with a status indicator.  All that you need
 is a proxy to transparently connect the staging backend when a production URL
 is requested… and that proxy is devproxy.
