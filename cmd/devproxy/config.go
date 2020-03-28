@@ -15,20 +15,22 @@ func ConfigureRules(r RouteArgs) devproxy.Ruleset {
 
 	// Add a rule to the ruleset.
 	rules.Add(devproxy.Rule{
-		// Matcher: may be matched against a hostname only (http + default port)
-		// or may include a ":port" section (http + other port, https + any port)
+		// Matcher: a regular expression that decides whether to try this rule.
+		// The text to match may be a hostname only (http + default port), or
+		// may include a ":port" section (http + other port, https + any port).
 		regexp.MustCompile("^(?:.+\\.)?example\\.(com|net|org)(?::\\d+)?$"),
 
 		// Action: a destination to forward to.  Represented as a function that
-		// returns either "" (meaning declined, try the next matcher) or a
+		// returns either "" (meaning declined, try the next rule), or a
 		// "hostname[:port]" to connect.  :port MUST be added for TLS!
 		//
 		// There are some pre-defined functions to build Actions: SendHttpTo,
-		// SendTlsTo, and SendAllTo all take a host, and send traffic to ports 80
-		// and/or 443 as appropriate.  Each of those has a Send*ToPort variant
-		// that takes a host and port, and sends traffic to the specified port.
-		// SendAllToPort sends both HTTP and TLS traffic to the _same_ port; for
-		// different ports, use SendAllToDualPorts(host, httpPort, tlsPort).
+		// SendTlsTo, and SendAllTo all take a host, and send traffic to ports
+		// 80 and/or 443 as appropriate.  Each of those has a Send*ToPort
+		// variant that takes a host and port, and sends traffic to the
+		// specified port. SendAllToPort sends both HTTP and TLS traffic to the
+		// _same_ port; for different ports, use SendAllToDualPorts(host,
+		// httpPort, tlsPort).
 		devproxy.SendAllTo(r.Target)})
 
 	// More rules can be added here, if needed.
@@ -36,5 +38,3 @@ func ConfigureRules(r RouteArgs) devproxy.Ruleset {
 	// Return the completed ruleset.
 	return rules
 }
-
-// vim:ft=go
