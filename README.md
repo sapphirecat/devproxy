@@ -1,5 +1,21 @@
 # DevProxy
 
+Redirect traffic for your production hosts to a development IP.
+
+# NOTICE
+
+Version 2 is under development.
+It will be published when ready at
+[devproxy2](https://github.com/sapphirecat/devproxy2/).
+
+The main goal is to be able to use a TOML configuration to define rules,
+instead of compiling them into `config.go`.  I tried the Google Way,
+but I hate dragging around a toolchain to make minor updates.
+
+Version 1 will remain available as-is in this repository.
+
+# DevProxy, in more words
+
 A proxy that connects requests made to certain hosts to an arbitrary backend
 server, called the doppelgänger.  Example the first (note that the “real”
 address and port where `example.com` would be served from is irrelevant):
