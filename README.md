@@ -2,17 +2,20 @@
 
 Redirect traffic for your production hosts to a development IP.
 
-# NOTICE
+# NOTICE: A SUCCESSOR IS AVAILABLE
 
-Version 2 is under development.
-It will be published when ready at
+**Version 2 has been published** at
 [devproxy2](https://github.com/sapphirecat/devproxy2/).
+It supports Go 1.13 and newer in module mode.
 
-The main goal is to be able to use a TOML configuration to define rules,
+The main change is to be able to use a TOML configuration to define rules,
 instead of compiling them into `config.go`.  I tried the Google Way,
 but I hate dragging around a toolchain to make minor updates.
 
 Version 1 will remain available as-is in this repository.
+It is expected to remain usable as long as Go supports `GO111MODULE=off`
+(i.e., when using GOPATH mode), although it is not tested rigorously.
+
 
 # DevProxy, in more words
 
@@ -54,7 +57,7 @@ it just shuttles bytes.
 	 this README.md file.
 2. Edit [cmd/devproxy/config.go](./cmd/devproxy/config.go) to configure what
    servers should be intercepted
-3. `go build ./cmd/devproxy`
+3. `GO111MODULE=off go build ./cmd/devproxy`
 4. Run ./devproxy (Linux/OS X) or devproxy.exe (Windows)
 5. Set your web proxy to 127.0.0.1:8111
 
@@ -95,7 +98,7 @@ These options are fully independent; neither implies the other.
 # Compatibility
 
 Last major rewrite: October 2014.
-Last tested on macOS Catalina with go 1.14, installed via homebrew.
+Last tested on Ubuntu 21.10 with go 1.18beta1.
 Currently expected to remain stable.
 
 
